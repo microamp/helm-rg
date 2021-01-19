@@ -75,6 +75,7 @@ sensitively otherwise."
                  (when helm-rg-ignore-case "--ignore-case")
                  (when helm-rg-hidden "--hidden")
                  (when helm-rg-smart-case "--smart-case")
+                 "-n"
                  helm-pattern
                  helm-rg-path)))
 
