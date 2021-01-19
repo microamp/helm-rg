@@ -94,8 +94,18 @@ sensitively otherwise."
             event
             helm-rg-path))))))
 
+(defun helm-rg--remove-drive-letter (candidate)
+  "Remove the drive letter from CANDIDATE if we're on windows."
+  (if (eq system-type 'windows-nt)
+      (let ((match-pos (string-match "^[a-zA-Z]:" candidate)))
+        (if (eq match-pos 0)
+            (substring candidate 2)
+          candidate))
+    candidate))
+
 (defun helm-rg--filter-one-by-one (candidate)
-  (let* ((split (s-split-up-to ":" candidate 2))
+  (let* ((without-letter (helm-rg--remove-drive-letter candidate))
+         (split (s-split-up-to ":" without-letter 2))
          (filename (nth 0 split))
          (filename-short (s-chop-prefix helm-rg-path filename))
          (line-number (nth 1 split))
@@ -109,7 +119,8 @@ sensitively otherwise."
           candidate)))
 
 (defun helm-rg--action (candidate)
-  (let* ((split (s-split-up-to ":" candidate 2))
+  (let* ((without-letter (helm-rg--remove-drive-letter candidate))
+         (split (s-split-up-to ":" without-letter 2))
          (filename (nth 0 split))
          (line-number (string-to-number (nth 1 split))))
     (progn
